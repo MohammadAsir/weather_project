@@ -4,19 +4,24 @@ import torch.nn.functional as F
 from torchvision import transforms
 
 
-# Basic block for ResNet will be used for resnet18 and resnet34, with convs of 3x3 and 3x3
+    # Basic block for ResNet will be used for resnet18 and resnet34, 
+    # with convs of 3x3 and 3x3
+
 class BasicBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1):
         super(BasicBlock, self).__init__()
-        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1)
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, 
+                               stride=stride, padding=1)
         self.bn1 = nn.BatchNorm2d(out_channels)
-        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, 
+                               stride=1, padding=1)
         self.bn2 = nn.BatchNorm2d(out_channels)
         
         self.shortcut = nn.Sequential()
         if stride != 1 or in_channels != out_channels:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=stride),
+                nn.Conv2d(in_channels, out_channels, kernel_size=1, 
+                          stride=stride),
                 nn.BatchNorm2d(out_channels)
             )
 
@@ -32,7 +37,8 @@ class BasicBlock(nn.Module):
         out = F.relu(out)
         return out
     
-    ## Bottleneck block for ResNet will be used for resnet50, resnet101 and resnet152 with connvs of 1x1, 3x3 and 1x1
+    # Bottleneck block for ResNet will be used for resnet50, resnet101 and 
+    # resnet152 with connvs of 1x1, 3x3 and 1x1  
 class BottleNeck(nn.Module):
     expansion = 4
 
@@ -40,15 +46,18 @@ class BottleNeck(nn.Module):
         super(BottleNeck, self).__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1)
         self.bn1 = nn.BatchNorm2d(out_channels)
-        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=stride, padding=1)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, 
+                               stride=stride, padding=1)
         self.bn2 = nn.BatchNorm2d(out_channels)
-        self.conv3 = nn.Conv2d(out_channels, out_channels * self.expansion, kernel_size=1)
+        self.conv3 = nn.Conv2d(out_channels, out_channels * self.expansion, 
+                               kernel_size=1)
         self.bn3 = nn.BatchNorm2d(out_channels * self.expansion)
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_channels != out_channels * self.expansion:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels * self.expansion, kernel_size=1, stride=stride),
+                nn.Conv2d(in_channels, out_channels * self.expansion, 
+                          kernel_size=1, stride=stride),
                 nn.BatchNorm2d(out_channels * self.expansion)
             )
 
@@ -130,6 +139,8 @@ def transform(self, x):
             transforms.Resize((256, 256)),
             transforms.CenterCrop(224),
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406], 
+                std=[0.229, 0.224, 0.225])
         ])
         return transform(x)
