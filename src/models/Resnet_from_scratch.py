@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision import transforms
 
 
     # Basic block for ResNet will be used for resnet18 and resnet34, 
     # with convs of 3x3 and 3x3
 
 class BasicBlock(nn.Module):
+    expansion = 1
     def __init__(self, in_channels, out_channels, stride=1):
         super(BasicBlock, self).__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, 
@@ -134,13 +134,3 @@ def ResNet101(num_classes, channels=3):
 
 def ResNet152(num_classes, channels=3):
     return ResNet(BottleNeck, [3,8,36,3], num_classes, channels)
-def transform(self, x):
-        transform = transforms.Compose([
-            transforms.Resize((256, 256)),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize(
-                mean=[0.485, 0.456, 0.406], 
-                std=[0.229, 0.224, 0.225])
-        ])
-        return transform(x)

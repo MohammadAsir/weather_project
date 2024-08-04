@@ -9,6 +9,5 @@ class Vit(nn.Module):
         num_classes = 11
         self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)
     
-    def transform(self, x):
-        transform = ViT_B_16_Weights.DEFAULT.transforms()
-        return transform(x)
+    def forward(self, x):
+        return self.model(x)

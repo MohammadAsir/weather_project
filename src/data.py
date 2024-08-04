@@ -1,6 +1,6 @@
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets
-import pytorch_lightning as pl
+import lightning.pytorch as pl
 
 class ImageFolderDataModule(pl.LightningDataModule):
     def __init__(self, data_dir, batch_size=32, train_size=0.8, 
@@ -16,8 +16,11 @@ class ImageFolderDataModule(pl.LightningDataModule):
         train_size = int(self.train_size * len(dataset))
         val_size = int(0.1 * len(dataset))
         test_size = len(dataset) - train_size - val_size
-        self.train_dataset, self.val_dataset, self.test_dataset = random_split
-        (dataset, [train_size, val_size, test_size])
+        (self.train_dataset, 
+        self.val_dataset, 
+        self.test_dataset) = random_split(dataset, 
+                                        [train_size, val_size, test_size])
+
     
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.batch_size, 
