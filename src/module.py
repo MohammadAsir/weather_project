@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
-from torchmetrics.classification import Accuracy, MulticlassF1Score, MulticlassConfusionMatrix
+from torchmetrics.classification import Accuracy, MulticlassF1Score
+from torchmetrics.classification import MulticlassConfusionMatrix
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -15,7 +16,8 @@ class ResNetLightningModule(pl.LightningModule):
         self.learning_rate = learning_rate
         self.criterion = nn.CrossEntropyLoss()
         self.accuracy = Accuracy(task="multiclass", num_classes=num_classes)
-        self.f1 = MulticlassF1Score(num_classes=num_classes, average='weighted')
+        self.f1 = MulticlassF1Score(num_classes=num_classes,
+                                     average='weighted')
         self.conf_matrix = MulticlassConfusionMatrix(num_classes=num_classes)
 
     def forward(self, x):
@@ -70,11 +72,11 @@ class ResNetLightningModule(pl.LightningModule):
 
     
     def configure_callbacks(self):
-        early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=0.05, patience=1, mode="min")
-        ckpt_callback = ModelCheckpoint(save_top_k=1, mode='max', monitor="val_f1") 
+        early_stop_callback = EarlyStopping(monitor="val_loss", 
+                                        min_delta=0.05, patience=1, mode="min")
+        ckpt_callback = ModelCheckpoint(save_top_k=1, mode='max',
+                                         monitor="val_f1") 
         return [early_stop_callback, ckpt_callback]
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
-
-print("Module loaded")
