@@ -9,7 +9,6 @@ from torchmetrics.classification import (
     MulticlassF1Score,
 )
 
-LEARNING_RATE = 1.2e-4
 
 class ModelLightningModule(pl.LightningModule):
     def __init__(self, model, learning_rate, num_classes=11):
@@ -21,7 +20,8 @@ class ModelLightningModule(pl.LightningModule):
         self.f1 = MulticlassF1Score(num_classes=num_classes,
                                      average='weighted')
         self.conf_matrix = MulticlassConfusionMatrix(num_classes=num_classes)
-
+        self.save_hyperparameters()
+        
     def forward(self, x):
         logits = self.model(x)
         return logits
@@ -74,4 +74,14 @@ class ModelLightningModule(pl.LightningModule):
         plt.show()
 
     def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.Adam(self.parameters(), lr= 1e-5)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min')
+        return {
+            'optimizer': optimizer,
+            'lr_scheduler': {
+                'scheduler': scheduler,
+                'monitor': 'val_loss',
+                'interval': 'epoch',
+                'frequency': 5
+            }
+        }

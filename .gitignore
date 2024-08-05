@@ -6,4 +6,5 @@ __pycache__/
 pyproject.toml/
 notebooks/
 logs/
-.main.py.swp/
+image_classification/
+wandb/

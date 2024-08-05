@@ -2,8 +2,8 @@ import argparse
 import os
 
 import lightning.pytorch as pl
-from lightning.pytorch import loggers as pl_loggers
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
+from pytorch_lightning.loggers import WandbLogger
 from torchvision import transforms
 from torchvision.models import ViT_B_16_Weights
 
@@ -119,16 +119,18 @@ pl_model = ModelLightningModule(model, learning_rate=LEARNING_RATE,
                                  num_classes=NUM_CLASSES)
 data_module = ImageFolderDataModule(DATA_DIR, transform=transform)
 
-csv_logger = pl_loggers.CSVLogger('logs/', name='csv_logs')
+wandb_logger = WandbLogger(name='wandb_logs', project='image_classification')
+wandb_logger.watch(pl_model, log='all')
+
 early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=0.001,
                                      patience=3, mode="min")
 ckpt_callback = ModelCheckpoint(save_top_k=1, mode='max', monitor="val_f1")
 
 trainer = pl.Trainer(callbacks=[early_stop_callback, ckpt_callback],
                       max_epochs=NUM_EPOCHS, devices=1, 
-                      accelerator='gpu', logger=csv_logger)
+                      accelerator='gpu', logger=wandb_logger)
 
 trainer.fit(pl_model, data_module)
 trainer.test(pl_model, data_module, ckpt_path='best')
 
-plot_loss_curves(csv_logger)
+plot_loss_curves(wandb_logger)

@@ -1,19 +1,17 @@
-import os
-
 import matplotlib.pyplot as plt
 import pandas as pd
 
+import wandb
+
 
 def plot_loss_curves(logger):
-    metrics_path = os.path.join(logger.save_dir, 
-                                logger.name, 
-                                f"version_{logger.version}",
-                                "metrics.csv")
-    
-    if not os.path.exists(metrics_path):
-        raise FileNotFoundError(f"Metrics file not found at: {metrics_path}")
-
-    metrics = pd.read_csv(metrics_path)
+    api = wandb.Api()
+    entity = logger.experiment.entity
+    project = logger.experiment.project
+    run_id = logger.experiment.id
+    run = api.run(f"{entity}/{project}/{run_id}")
+    history = run.history(samples=10000)
+    metrics = pd.DataFrame(history)
 
     plt.figure(figsize=(10, 5))
     train_loss = metrics.dropna(subset=['train_loss'])
