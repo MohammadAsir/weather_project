@@ -20,8 +20,8 @@ class ModelLightningModule(pl.LightningModule):
         self.f1 = MulticlassF1Score(num_classes=num_classes,
                                      average='weighted')
         self.conf_matrix = MulticlassConfusionMatrix(num_classes=num_classes)
-        self.save_hyperparameters()
-        
+        self.save_hyperparameters(ignore=['model'])
+
     def forward(self, x):
         logits = self.model(x)
         return logits
@@ -75,7 +75,8 @@ class ModelLightningModule(pl.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr= 1e-5)
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min')
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 
+                                                               'min')
         return {
             'optimizer': optimizer,
             'lr_scheduler': {
