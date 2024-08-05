@@ -1,10 +1,13 @@
-import torch
-import torch.nn as nn
 import lightning.pytorch as pl
-from torchmetrics.classification import Accuracy, MulticlassF1Score
-from torchmetrics.classification import MulticlassConfusionMatrix
 import matplotlib.pyplot as plt
 import seaborn as sns
+import torch
+import torch.nn as nn
+from torchmetrics.classification import (
+    Accuracy,
+    MulticlassConfusionMatrix,
+    MulticlassF1Score,
+)
 
 LEARNING_RATE = 1.2e-4
 

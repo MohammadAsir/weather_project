@@ -1,18 +1,24 @@
-import os
 import argparse
+import os
+
 import lightning.pytorch as pl
 from lightning.pytorch import loggers as pl_loggers
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
-from torchvision.models import ViT_B_16_Weights
 from torchvision import transforms
+from torchvision.models import ViT_B_16_Weights
+
 from src.data import ImageFolderDataModule
-from src.module import ModelLightningModule
 from src.graph import plot_loss_curves
-from src.models.Resnet_from_scratch import ResNet101, ResNet152
-from src.models.Resnet_from_scratch import ResNet18, ResNet34, ResNet50
+from src.models.Resnet_from_scratch import (
+    ResNet18,
+    ResNet34,
+    ResNet50,
+    ResNet101,
+    ResNet152,
+)
 from src.models.resnet_pre import ResnetPre
 from src.models.vit import Vit
-
+from src.module import ModelLightningModule
 
 DATA_DIR = os.path.join(os.curdir, "data","raw")
 
@@ -38,7 +44,7 @@ MODEL = args.model
 NUM_CLASSES = args.num_classes
 
 if MODEL == "Vit":
-    model = Vit()
+    model = Vit(num_classes=NUM_CLASSES)
     transform = ViT_B_16_Weights.DEFAULT.transforms()
     
 elif MODEL == "ResnetPre":
@@ -114,8 +120,8 @@ pl_model = ModelLightningModule(model, learning_rate=LEARNING_RATE,
 data_module = ImageFolderDataModule(DATA_DIR, transform=transform)
 
 csv_logger = pl_loggers.CSVLogger('logs/', name='csv_logs')
-early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=0.05,
-                                     patience=1, mode="min")
+early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=0.001,
+                                     patience=3, mode="min")
 ckpt_callback = ModelCheckpoint(save_top_k=1, mode='max', monitor="val_f1")
 
 trainer = pl.Trainer(callbacks=[early_stop_callback, ckpt_callback],
