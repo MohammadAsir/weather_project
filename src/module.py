@@ -23,7 +23,8 @@ class ModelLightningModule(pl.LightningModule):
         self.conf_matrix = MulticlassConfusionMatrix(num_classes=num_classes)
 
     def forward(self, x):
-        return self.model(x)
+        logits = self.model(x)
+        return logits
 
     def training_step(self, batch, batch_idx):
         x, y = batch
