@@ -1,6 +1,7 @@
+import lightning.pytorch as pl
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets
-import lightning.pytorch as pl
+
 
 class ImageFolderDataModule(pl.LightningDataModule):
     def __init__(self, data_dir, batch_size=32, train_size=0.8, 

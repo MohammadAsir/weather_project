@@ -1,6 +1,8 @@
 import os
-import pandas as pd
+
 import matplotlib.pyplot as plt
+import pandas as pd
+
 
 def plot_loss_curves(logger):
     metrics_path = os.path.join(logger.save_dir, 
