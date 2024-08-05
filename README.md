@@ -88,7 +88,7 @@ pip install -r requirements.txt
 
 ## Results
 Initial testing results:
-![image.png](Initial Results)
+![alt text](image-1.png)
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
